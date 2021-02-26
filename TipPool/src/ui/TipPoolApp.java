@@ -66,6 +66,9 @@ public class TipPoolApp {
 			case "calc":
 				calculateTotalTipout(serverList, serverAssistantList);
 				break;
+			case "sa":
+				getSATipoutPerShift(serverAssistantList);
+				break;
 			case "help":
 				commandMenu();
 				break;
@@ -86,11 +89,12 @@ public class TipPoolApp {
 		menu.append("-list s-  List All Pets\n");
 		menu.append("-add s-   Add a Server\n");
 		menu.append("-add sa-  Add a Server Assistant\n");
-		menu.append("-tipout- Find the total Tip Out\n");
-		menu.append("-thours- Find the total SA Hours worked\n");
-		menu.append("-calc-   Calculate SA tipout\n");
-		menu.append("-help-   Display Command Menu\n");
-		menu.append("-exit-   Exit Application\n");
+		menu.append("-tipout-  Find the total Tip Out\n");
+		menu.append("-thours-  Find the total SA Hours worked\n");
+		menu.append("-calc-    Calculate SA tipout\n");
+		menu.append("-sa-      SA tipout\n");
+		menu.append("-help-    Display Command Menu\n");
+		menu.append("-exit-    Exit Application\n");
 		menu.append("==================================\n");
 		System.out.println(menu);
 	}
@@ -136,34 +140,67 @@ public class TipPoolApp {
 	// Add into Enhanced console for easy double configuration
 	public static double bigDecimalSetPoint(double input) {
 		double newValue = 0;
-		System.out.println("Input double = " + input);
+		//System.out.println("Input double = " + input);
 		BigDecimal bd = new BigDecimal(input).setScale(2, RoundingMode.FLOOR);
 		newValue = bd.doubleValue();
 		System.out.println("BigDecimal double = " + newValue);
 		return newValue;
 	}
 	
+	// TODO Combine function with getSATipoutPerShift Show tipout per SA/calc running total
+	public static double findTipoutRemainder(List<ServerAssistant> serverAssistantList) {
+		double runningTotal = 0;
+		for (ServerAssistant sa : serverAssistantList) {
+			runningTotal += sa.getTipPerShift();
+		}
+		System.out.println("Running Total = " + runningTotal);
+		return runningTotal;
+	}
+	
+	public static void takeCareOfClosers (List<ServerAssistant> serverAssistantList, double remainder) {
+		double tipPerShift = 0;
+		ServerAssistant sa = serverAssistantList.get(serverAssistantList.size() - 1);
+		tipPerShift = sa.getTipPerShift() + remainder;
+		sa.setTipPerShift(tipPerShift);
+	}
+	
 	public static void calculateTotalTipout(List<Server> serverList, List<ServerAssistant> serverAssistantList) {
 		int totalTipout = 0;
 		double totalHoursWorked = 0;
-		//double remainder = 0;
+		double saTipTotal = 0;
+		double remainder = 0;
 		double tipoutRateOfPay = 0;
 		totalTipout = getTotalTipOut(serverList);
+		//System.out.println("Tip pool = " + totalTipout);
 		totalHoursWorked = getTotalHoursWorked(serverAssistantList);
+		//System.out.println("Total Hours worked = " + totalHoursWorked);
 		tipoutRateOfPay = totalTipout / totalHoursWorked;
+		//System.out.println("Raw Rate of Pay = $" + tipoutRateOfPay);
 		tipoutRateOfPay = bigDecimalSetPoint(tipoutRateOfPay);
+		//System.out.println("Truncated rate of pay = $" + tipoutRateOfPay);
 		//remainder = totalTipout - (totalHoursWorked * tipoutRateOfPay);
-		
-		for (ServerAssistant sa : serverAssistantList) {
-			double tipsForCurrentShift = 0;
-			double saHoursWorked = sa.getHoursWorked();
-			tipsForCurrentShift = tipoutRateOfPay * saHoursWorked;
-			tipsForCurrentShift = bigDecimalSetPoint(tipsForCurrentShift);
-			sa.setTipPerShift(tipsForCurrentShift);
-			System.out.println("SA name = " + sa.getFirstName() + " " + sa.getLastName()+ 
-					"\nTipout >>> " + sa.getTipPerShift());
+		//System.out.println("Remainder = $" + remainder);
+			for (ServerAssistant sa : serverAssistantList) {
+				double tipsForCurrentShift = 0;
+				double saHoursWorked = sa.getHoursWorked();
+				tipsForCurrentShift = tipoutRateOfPay * saHoursWorked;
+				tipsForCurrentShift = bigDecimalSetPoint(tipsForCurrentShift);
+				sa.setTipPerShift(tipsForCurrentShift);
+				System.out.println(sa.getFirstName() + " " + sa.getLastName()+ 
+						"\nTipout >>> " + sa.getTipPerShift());
+				tipsForCurrentShift = 0;
 		}
-		
-		//TODO Add remainder to the last ServerAssistant in List
+			saTipTotal = findTipoutRemainder(serverAssistantList);
+			remainder = bigDecimalSetPoint(totalTipout - saTipTotal);
+			System.out.println("Remainder = " + remainder);
+			takeCareOfClosers(serverAssistantList, remainder);
 	}
+	
+	public static void getSATipoutPerShift(List<ServerAssistant> serverAssistantList) {
+		for(ServerAssistant sa : serverAssistantList) {
+			System.out.println(sa.getFirstName() + " " + sa.getLastName() + " >>> $" 
+			+ sa.getTipPerShift());
+		}
+	}
+	
 }

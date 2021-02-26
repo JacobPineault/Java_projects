@@ -86,7 +86,7 @@ public class ServerAssistant {
 	@Override
 	public String toString() {
 		return firstName + " " + lastName + ", hoursWorked= "
-				+ hoursWorked + "]";
+				+ hoursWorked + "TipoutPerShift = " + tipPerShift;
 	}
 	
 	
