@@ -8,14 +8,16 @@ public class ServerAssistant {
 	String firstName = "";
 	String lastName = "";
 	double hoursWorked;
+	double tipPerShift;
 	// boolean closer;
 	
-	public ServerAssistant(String firstName, String lastName, double hoursWorked) {
+	public ServerAssistant(String firstName, String lastName, double hoursWorked, double tipPerShift) {
 		super();
 		this.id = idCounter++;
 		this.firstName = firstName;
 		this.lastName = lastName;
 		this.hoursWorked = hoursWorked;
+		this.tipPerShift = tipPerShift;
 //		this.closer = closer;
 	}
 
@@ -27,7 +29,8 @@ public class ServerAssistant {
 		String fName = Console.getString("First Name? ", true);
 		String lName = Console.getString("Last Name? ", true);
 		double hrs = Console.getDouble("Hours worked? ");
-		ServerAssistant sa = new ServerAssistant(fName, lName, hrs);
+		double tipPerShift = 0;
+		ServerAssistant sa = new ServerAssistant(fName, lName, hrs, tipPerShift);
 		System.out.println(sa.firstName + " " + sa.lastName + " was added!\n");
 		return sa;
 	}
@@ -71,6 +74,14 @@ public class ServerAssistant {
 //	public void setCloser(boolean closer) {
 //		this.closer = closer;
 //	}
+
+	public double getTipPerShift() {
+		return tipPerShift;
+	}
+
+	public void setTipPerShift(double tipPerShift) {
+		this.tipPerShift = tipPerShift;
+	}
 
 	@Override
 	public String toString() {
