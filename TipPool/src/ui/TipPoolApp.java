@@ -99,6 +99,7 @@ public class TipPoolApp {
 		System.out.println(menu);
 	}
 	
+	//Adds borders to separate each layer in the console for method testing
 	public static String getBorder() {
 		StringBuilder sb = new StringBuilder (58);
 		while (sb.length() < 58) {
@@ -107,28 +108,28 @@ public class TipPoolApp {
 		return sb.toString();
 	}
 	
+	//Calculates total tips from servers for the tip pool
 	public static int getTotalTipOut(List<Server> serverList) {
 		int serverTipoutTotal = 0;
 		for (Server server : serverList) {
 			serverTipoutTotal += server.getTipOut();
-//		System.out.println("Current TipOut = " + to);
 		}
 		System.out.println("Final TipOut = " + serverTipoutTotal);
 		return serverTipoutTotal;
 	}
 	
+	//Calculates total hours worked from SA's for the tip pool
 	public static double getTotalHoursWorked(List<ServerAssistant> serverAssistantList) {
 		double serverAssistantHoursTotal = 0;
 		for (ServerAssistant sa : serverAssistantList) {
 			serverAssistantHoursTotal += sa.getHoursWorked();
-//			System.out.println("Current TOW = " + tow);
 		}
 			System.out.println("Final TotalHoursWorked = " + serverAssistantHoursTotal);
 		return serverAssistantHoursTotal;
 	}
 
-	// Mathematically truncate a double to a specific decimal value
-	// Add into Enhanced console
+	// Truncate a double to a specific decimal value determined by the user
+	// Add to Enhanced console
 	public static double truncateDouble(double value, int decimalPoint) {
 		double newValue = 0;
 		value = value * Math.pow(10, decimalPoint);
@@ -140,7 +141,6 @@ public class TipPoolApp {
 	// Add into Enhanced console for easy double configuration
 	public static double bigDecimalSetPoint(double input) {
 		double newValue = 0;
-		//System.out.println("Input double = " + input);
 		BigDecimal bd = new BigDecimal(input).setScale(2, RoundingMode.FLOOR);
 		newValue = bd.doubleValue();
 		System.out.println("BigDecimal double = " + newValue);
@@ -157,6 +157,7 @@ public class TipPoolApp {
 		return runningTotal;
 	}
 	
+	// Method adds remainder of Tip pool to the last SA on the list
 	public static void takeCareOfClosers (List<ServerAssistant> serverAssistantList, double remainder) {
 		double tipPerShift = 0;
 		ServerAssistant sa = serverAssistantList.get(serverAssistantList.size() - 1);
@@ -171,15 +172,10 @@ public class TipPoolApp {
 		double remainder = 0;
 		double tipoutRateOfPay = 0;
 		totalTipout = getTotalTipOut(serverList);
-		//System.out.println("Tip pool = " + totalTipout);
 		totalHoursWorked = getTotalHoursWorked(serverAssistantList);
-		//System.out.println("Total Hours worked = " + totalHoursWorked);
 		tipoutRateOfPay = totalTipout / totalHoursWorked;
-		//System.out.println("Raw Rate of Pay = $" + tipoutRateOfPay);
+		//tipoutRateOfPay must be truncated as to not exceed the amount on the Tip pool
 		tipoutRateOfPay = bigDecimalSetPoint(tipoutRateOfPay);
-		//System.out.println("Truncated rate of pay = $" + tipoutRateOfPay);
-		//remainder = totalTipout - (totalHoursWorked * tipoutRateOfPay);
-		//System.out.println("Remainder = $" + remainder);
 			for (ServerAssistant sa : serverAssistantList) {
 				double tipsForCurrentShift = 0;
 				double saHoursWorked = sa.getHoursWorked();
